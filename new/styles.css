@@ -580,6 +580,10 @@ h1 {
   position: relative;
 }
 
+.m-5{
+  margin: 1.25rem;
+}
+
 .mb-2{
   margin-bottom: 0.5rem;
 }
@@ -722,6 +726,10 @@ h1 {
   padding: 0.625rem;
 }
 
+.p-5{
+  padding: 1.25rem;
+}
+
 .px-1{
   padding-left: 0.25rem;
   padding-right: 0.25rem;
@@ -760,6 +768,11 @@ h1 {
 .py-4{
   padding-top: 1rem;
   padding-bottom: 1rem;
+}
+
+.py-5{
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
 }
 
 .text-left{

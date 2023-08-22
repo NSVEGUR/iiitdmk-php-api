@@ -1,7 +1,7 @@
 <?php
 	include "../../dbconnect.php";
 	if(isset($_POST['submit'])){
-		$category = $_POST['category'];
+		$description = $_POST['description'];
 		$title = $_POST['title'];
 		$priority = $_POST['priority'] ? $_POST['priority'] : 0;
 		$current_date = date("Y-m-d H:i:s");
@@ -21,7 +21,7 @@
 					die("Error in uploading file.");
 				}
 		}
-		$sql = "INSERT INTO `notifications` (category, title, priority, attachment, created_at, updated_at) VALUES ('$category', '$title', '$priority', '$attachment', '$created_at', '$updated_at')";
+		$sql = "INSERT INTO `carousal` (description, title, priority, attachment, created_at, updated_at) VALUES ('$description', '$title', '$priority', '$attachment', '$created_at', '$updated_at')";
 		$result = mysqli_query($conn, $sql);
 		if($result){
 			header('location:index.php');
@@ -38,7 +38,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link href="../styles.css" rel="stylesheet">
-	<title>Notification Creation | IIITDM Kancheepuram</title>
+	<title>Carousal Creation | IIITDM Kancheepuram</title>
 </head>
 
 <body>
@@ -51,33 +51,28 @@
 					<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
 				</svg>
 				Go Back</a>
-			<h1 class="text-center text-2xl mb-5 border-b text-skin-accent">New Notification</h1>
+			<h1 class="text-center text-2xl mb-5 border-b text-skin-accent">New Carousal or Slide</h1>
 			<div>
-				<label for="category" class="block mb-2 text-sm font-medium">Select Notification
-					Category</label>
-				<select name="category"
-					class="cursor-pointer bg-muted focus:outline-accent border text-sm rounded-lg block w-full p-2.5">
-					<option value="Achievements">Achievements</option>
-					<option value="Announcements">Announcements</option>
-					<option value="Events">Events</option>
-					<option value="Publications">Publications</option>
-				</select>
+				<label for="title" class="block mb-2 text-sm font-medium">Title (If any): </label>
+				<input name="title" type="text" class="w-full p-2.5 border rounded-lg bg-muted focus:outline-accent"
+					placeholder="Title goes here" />
 			</div>
 			<div>
-				<label for="title" class="block mb-2 text-sm font-medium">Title/Description: </label>
-				<textarea name="title" rows="4"
+				<label for="description" class="block mb-2 text-sm font-medium">Description (If any): </label>
+				<textarea name="description" rows="4"
 					class="block p-2.5 w-full text-sm bg-muted focus:outline-accent rounded-lg border "
-					placeholder="Write Title or Description of the notification here ..." required></textarea>
+					placeholder="Write any description to be displayed here ..."></textarea>
 			</div>
 			<div>
-				<label for="priority" class="block mb-2 text-sm font-medium">Priority (Number): </label>
+				<label for="priority" class="block mb-2 text-sm font-medium">Priority - Important(Number): </label>
 				<input name="priority" type="number" class="w-full p-2.5 border rounded-lg bg-muted focus:outline-accent"
 					placeholder="Displayed based on priority order" />
 			</div>
 			<div>
-				<label class="block mb-2 text-sm font-medium " for="attachment">Upload attachment(If any): </label>
-				<input name="attachment"
-					class="block w-full text-sm border rounded-lg p-2.5 cursor-pointer bg-muted focus:outline-accent" type="file">
+				<label class="block mb-2 text-sm font-medium " for="attachment">Upload attachment*: </label>
+				<input name="attachment" accept="image/*"
+					class="block w-full text-sm border rounded-lg p-2.5 cursor-pointer bg-muted focus:outline-accent" type="file"
+					required>
 			</div>
 			<button type="submit" name="submit"
 				class="text-white bg-accent cursor-pointer hover:bg-accent-secondary focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5">

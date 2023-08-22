@@ -1,5 +1,9 @@
 const config = {
-  content: ["./new/notifications/**/*.{html,js,php}"],
+  content: [
+    "./new/notifications/**/*.{html,js,php}",
+    "./new/carousal/**/*.{html,js,php}",
+    "./new/phd-presentations/**/*.{html,js,php}",
+  ],
   theme: {
     extend: {
       fontFamily: {

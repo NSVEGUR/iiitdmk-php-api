@@ -1,20 +1,25 @@
 <?php
 	include "../../dbconnect.php";
 	$id=$_GET['id'];
-	$sql="SELECT * FROM `notifications` WHERE id=$id";
+	$sql="SELECT * FROM `research-projects` WHERE id=$id";
 	$result=mysqli_query($conn, $sql);
 	$row=mysqli_fetch_assoc($result);
+	$investigator = $row['investigator'];
+	$agency = $row['agency'];
 	$title=$row['title'];
-	$category=$row['category'];
-	$priority=$row['priority'];
+	$profile = $row['profile'];
+	$priority = $row['priority'];
 	$attachment=$row['attachment'];
 	if(isset($_POST['submit'])){
-		$category = $_POST['category'];
+		$investigator = $_POST['investigator'];
+		$agency = $_POST['agency'];
 		$title = $_POST['title'];
+		$profile = $row['profile'];
 		$priority = $_POST['priority'] ? $_POST['priority'] : 0;
 		$current_date = date("Y-m-d H:i:s");
+		$updated_at = $current_date;
 		$attachment = $row['attachment'];
-		if(isset($_FILES['attachment']) && $_FILES['attachment']['size'] > 0){
+		if(isset($_FILES['attachment'])  && $_FILES['attachment']['size'] > 0){
 			  $info = pathinfo($_FILES['attachment']['name']);
 				$ext = $info['extension']; // get the extension of the file
 				$FN =  $info['filename']; // get the Filename alone of the file
@@ -26,7 +31,19 @@
 					die("Error in uploading file.");
 				}
 		}
-		$sql = "UPDATE `notifications` set category='$category', title='$title', priority='$priority', updated_at='$current_date', attachment='$attachment' WHERE id=$id";
+		if(isset($_FILES['profile'])  && $_FILES['profile']['size'] > 0){
+			  $info = pathinfo($_FILES['profile']['name']);
+				$ext = $info['extension']; // get the extension of the file
+				$FN =  $info['filename']; // get the Filename alone of the file
+				$newname = $FN."-".date('dmYhis', time()).".".$ext;
+				$target = 'profiles/'.$newname;
+				if(move_uploaded_file( $_FILES['profile']['tmp_name'], $target)){
+					$profile = $target;
+				}else{
+					die("Error in uploading file.");
+				}
+		}
+		$sql = "UPDATE `research-projects` set investigator='$investigator', agency='$agency', title='$title', profile='$profile', priority='$priority', updated_at='$current_date', attachment='$attachment' WHERE id=$id";
 		$result = mysqli_query($conn, $sql);
 		if($result){
 			header('location:index.php');
@@ -43,11 +60,12 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link href="../styles.css" rel="stylesheet">
-	<title>Notification Updation | IIITDM Kancheepuram</title>
+	<title>Research Projects Updation | IIITDM Kancheepuram</title>
 </head>
 
 <body>
-	<main class="flex flex-col w-screen h-screen items-center justify-center px-5 text-black">
+	<main class="flex flex-col w-screen items-center justify-center text-black" style="
+	padding: 20px;">
 		<form class="w-full max-w-[600px] flex flex-col gap-5" method="POST" enctype="multipart/form-data">
 			<a href="index.php"
 				class="flex items-center justify-center gap-1 self-start mb-5 p-2 bg-error text-skin-inverted rounded-md"><svg
@@ -56,26 +74,39 @@
 					<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
 				</svg>
 				Go Back</a>
-			<h1 class="text-center text-2xl mb-5 border-b text-skin-accent">Update Notification</h1>
+			<h1 class="text-center text-2xl mb-5 border-b text-skin-accent">Update Research Project</h1>
 			<?php
-				echo '
-					<div>
-					<label for="category" class="block mb-2 text-sm font-medium">Select Notification
-						Category</label>
-					<select name="category"
-						value='.$category.'
-						class="cursor-pointer bg-muted focus:outline-accent border text-sm rounded-lg block w-full p-2.5">
-						<option value="Achievements" '.($category=='Achievements' ? "selected" : "").'>Achievements</option>
-						<option value="Announcements" '.($category=='Announcements' ? "selected" : "").'>Announcements</option>
-						<option value="Events" '.($category=='Events'  ? "selected" : "").'>Events</option>
-						<option value="Publications" '.($category=='Publications' ? "selected" : "").'>Publications</option>
-					</select>
-				</div>
+				echo '	
 			<div>
-				<label for="title" class="block mb-2 text-sm font-medium">Title/Description: </label>
+				<label for="investigator" class="block mb-2 text-sm font-medium">Investigator: </label>
+				<input name="investigator" type="text" class="w-full p-2.5 border rounded-lg bg-muted focus:outline-accent" value="'.$investigator.'" required></input>
+			</div>
+			<div>
+				<label for="agency" class="block mb-2 text-sm font-medium">Agency: </label>
+				<input name="agency" type="text" class="w-full p-2.5 border rounded-lg bg-muted focus:outline-accent" value="'.$agency.'" required></input>
+			</div>				
+			<div>
+				<label for="title" class="block mb-2 text-sm font-medium">Title: </label>
 				<textarea name="title" rows="4"
 					class="block p-2.5 w-full text-sm bg-muted focus:outline-accent rounded-lg border "
 					placeholder="Write Title or Description of the notification here ..." required>'.$title.'</textarea>
+			</div>
+			<div>
+				<p class="block mb-2 text-sm font-medium">Old Profile: </p>
+				<div class="w-full flex gap-2 p-2.5 border rounded-lg bg-muted">
+					<img src="'.$profile.'" alt="Profile" style="
+						height: 50px;
+						object-fit: cover;
+						border-radius: 50%;
+					" />
+				</div>
+			</div>
+			<div>
+				<label class="block mb-2 text-sm font-medium " for="profile">Upload new Profile(If required to rewrite):
+				</label>
+				<input name="profile"
+					class="block w-full text-sm border rounded-lg p-2.5 cursor-pointer bg-muted focus:outline-accent" type="file"
+					>
 			</div>
 			<div>
 				<label for="priority" class="block mb-2 text-sm font-medium">Priority (Number): </label>
